@@ -1,0 +1,74 @@
+{
+    "set": {
+        "name": "Трисет",
+        "numberOfSets": 3,
+        "exercises": [
+            {
+                "id": 1,
+                "name": "Наклоны на одной ноге",
+                "img": "https://musclefit.info/wp-content/uploads/2021/05/rumynskaya-tyaga-na-odnoj-noge-2-1.jpg",
+                "records": [
+                    {
+                        "setNumber": 1,
+                        "weight": 0,
+                        "reps": 0
+                    },
+                    {
+                        "setNumber": 2,
+                        "weight": 0,
+                        "reps": 0
+                    },
+                    {
+                        "setNumber": 3,
+                        "weight": 0,
+                        "reps": 0
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "Скалолаз",
+                "img": "https://cross.expert/wp-content/uploads/2017/10/uprazhnenie-skalolaz-tehnika.jpg",
+                "records": [
+                    {
+                        "setNumber": 1,
+                        "weight": 0,
+                        "reps": 0
+                    },
+                    {
+                        "setNumber": 2,
+                        "weight": 0,
+                        "reps": 0
+                    },
+                    {
+                        "setNumber": 3,
+                        "weight": 0,
+                        "reps": 0
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "Отжимания",
+                "img": "https://www.fitnesseducation.edu.au/wp-content/uploads/2017/03/Pushups.jpg",
+                "records": [
+                    {
+                        "setNumber": 1,
+                        "weight": 0,
+                        "reps": 0
+                    },
+                    {
+                        "setNumber": 2,
+                        "weight": 0,
+                        "reps": 0
+                    },
+                    {
+                        "setNumber": 3,
+                        "weight": 0,
+                        "reps": 0
+                    }
+                ]
+            }
+        ]
+    }
+}
