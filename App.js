@@ -1,163 +1,135 @@
-import { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
-import { Dimensions, Image, FlatList, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import data from './data.json';
+import { Par } from './components/Text';
+import { Carousel } from './components/Carousel';
+import { useRef, useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Dimensions, TouchableOpacity, StyleSheet, View } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
 
 export default function App() {
 
+	const ref1 = useRef(null);
+	const ref2 = useRef(null);
+	const ref3 = useRef(null);
 	const [setNum, setSetNum] = useState(1);
-	const [exerciseIndex, setExerciseIndex] = useState(0);
+	const [currInd, setCurrInd] = useState(0);
+	const [currReps, setCurrReps] = useState(0);
+	const [currWeight, setCurrWeight] = useState(0);
 
-	function infinite() {
+	const infinite = () => {
 		let num = []
-		for (let i = 0; i <= 100; i++) {
+		for (let i = 0; i <= 50; i++)
 			num[i] = i;
-		}
 		return num;
 	}
 
+	const handleRef = (ref, index) => {
+		ref.current?.scrollToIndex({
+			index,
+			animated: true,
+			viewPosition: 0.5,
+			viewOffset: screenWidth * (index === 0 && ref !== ref1 ? -0.05 : 0)
+		})
+	}
+
+	useEffect(() => {
+		data.set.exercises[currInd].records[setNum - 1].weight = currWeight;
+	}, [currWeight])
+
+	useEffect(() => {
+		data.set.exercises[currInd].records[setNum - 1].reps = currReps;
+	}, [currReps])
+	
+	const handleConfirm = () => {
+		if (setNum < data.set.numberOfSets) {
+			setCurrInd(0);
+			setSetNum(setNum + 1);
+		}
+	}
+	
+	useEffect(() => {
+		const newReps = data.set.exercises[currInd].records[setNum - 1].reps;
+		const newWeight = data.set.exercises[currInd].records[setNum - 1].weight;
+		setCurrReps(newReps);
+		setCurrWeight(newWeight);
+		handleRef(ref1, currInd);
+		handleRef(ref3, newReps);
+		handleRef(ref2, newWeight);
+	}, [currInd, setNum])
+	
 	return (
 		<SafeAreaView style={styles.container}>
-			<Text
-				style={[
-					styles.setName,
-					styles.white
-			]}>Трисет</Text>
-
-			<Text
-				style={[
-					styles.setNum,
-					styles.white
-			]}>
-				{setNum}/{data.set.numberOfSets}
-			</Text>
-			<Text style={styles.white}>Подход</Text>
-
-			<Text
-				style={[
-					styles.exerciseName,
-					styles.white,
-					{
-						marginTop: 20
-					}
-			]}>{data.set.exercises[exerciseIndex].name}</Text>
-			
-			<FlatList
+			<View>
+				<Par text='Трисет'/>
+				<Par
+					style={styles.setNum}
+					text={`${setNum}/${data.set.numberOfSets}`}/>
+				<Par text='Подход'/>
+			</View>
+			<Carousel
+				child={0}
+				ref={ref1}
+				initInd={currInd}
+				setFunc={setCurrInd}
+				handleRef={handleRef}
 				data={data.set.exercises}
-				style={{
-					marginTop: 20,
-				}}
-				horizontal
-				showsHorizontalScrollIndicator
-				pagingEnabled
-				initialScrollIndex={2}
-				renderItem={({item}) => 
-					<Image
-						source={{uri: item.img}}
-						style={[styles.img, {
-							marginLeft: item.id === 1 ? Dimensions.get('window').width * 0.33 : 10,
-							marginRight: item.id === data.set.exercises.length ? Dimensions.get('window').width * 0.33 : 10
-						}]}
-						borderRadius={15}
-					/>}
+				size={screenWidth * 0.3 + 40}
+				titleStyle={{ marginBottom: 20 }}
+				title={data.set.exercises[currInd].name}
 			/>
-		
-			<Text
-				style={[
-					styles.exerciseName,
-					styles.white
-			]}>Укажите вес с которым вы работали</Text>
-			
-			<FlatList
+			<Carousel
+				child={1}
+				ref={ref2}
+				offSet={-0.05}
 				data={infinite()}
-				style={{
-					marginTop: 20,
-				}}
-				contentContainerStyle={{
-					height: 'auto',
-					paddingHorizontal: Dimensions.get('window').width * 0.45
-				}}
-				horizontal
-				initialScrollIndex={0}
-				showsHorizontalScrollIndicator
-				ItemSeparatorComponent={<View style={styles.verticleLine}></View>}
-				renderItem={({item}) => 
-					<Text style={[styles.white, {fontSize: 30}]}>{item}</Text>}
+				initInd={currWeight}
+				handleRef={handleRef}
+				setFunc={setCurrWeight}
+				size={screenWidth * 0.2 + 20}
+				title="Укажите вес с которым вы работали"
 			/>
-
-			<Text
-				style={[
-					styles.exerciseName,
-					styles.white
-			]}>Укажите количество повторений</Text>
-			
-			<FlatList
+			<Carousel
+				child={1}
+				ref={ref3}
+				offSet={-0.05}
 				data={infinite()}
-				style={{
-					marginTop: 20,
-				}}
-				contentContainerStyle={{
-					height: 'auto',
-					paddingHorizontal: Dimensions.get('window').width * 0.45
-				}}
-				horizontal
-				showsHorizontalScrollIndicator
-				ItemSeparatorComponent={<View style={styles.verticleLine}></View>}
-				renderItem={({item}) => 
-					<Text style={[styles.white, {fontSize: 30}]}>{item}</Text>}
+				initInd={currReps}
+				handleRef={handleRef}
+				setFunc={setCurrReps}
+				size={screenWidth * 0.2 + 20}
+				title="Укажите количество повторений"
 			/>
-
-			<TouchableOpacity style={styles.btn}>
-				<Text
-					style={[
-						styles.white,
-						{
-							color: 'black',
-							fontSize: 20
-					}]}>Потдвердить ({setNum} из {data.set.numberOfSets})</Text>
+			<TouchableOpacity
+				style={styles.btn}
+				onPress={() => handleConfirm()}
+			>
+				<Par
+					style={styles.black}
+					text={`Потдвердить (${setNum} из ${data.set.numberOfSets})`}/>
 			</TouchableOpacity>
 		</SafeAreaView>
 	);
 }
-
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: 'black',
 		alignItems: 'center',
-		justifyContent: 'center',
-		height: '100%'
-	},
-	white: {
-		color: 'white',
-		textTransform: 'uppercase',
-		fontWeight: 'bold',
-	},
-	setName: {
-		fontSize: 18,
+		backgroundColor: 'black',
+		justifyContent: 'space-around',
 	},
 	setNum: {
 		fontSize: 60
 	},
-	exerciseName: {
-		fontSize: 20
-	},
-	img: {
-		width: Dimensions.get('window').width * 0.3,
-		height: Dimensions.get('window').height * 0.3,
-	},
 	btn: {
-		backgroundColor: 'white',
-		paddingVertical: 20,
 		width: "90%",
+		borderRadius: 100,
+		paddingVertical: 20,
 		alignItems: 'center',
-		borderRadius: 100
+		backgroundColor: 'white'
 	},
-	verticleLine: {
-		height: "35%",
-		width: 0.5,
-		marginHorizontal: 30,
-		backgroundColor: '#909090',
+	black: {
+		color: "black"
 	}
 });
+
